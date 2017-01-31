@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Devices">
+      <UniqueIdentifier>{09f92761-f512-4230-be1f-8533aaf482f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Devices\Orbbec">
+      <UniqueIdentifier>{4642a64f-fa6d-4a47-8950-16f983f75654}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Devices\Orbbec\Astra.cpp">
+      <Filter>Devices\Orbbec</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Devices\Orbbec\Astra.hpp">
+      <Filter>Devices\Orbbec</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
