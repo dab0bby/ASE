@@ -139,7 +139,7 @@ namespace ASE
         icp.setInputSource(source);
         icp.setInputTarget(target);
         icp.setMaximumIterations(iterationsPerUpdate);
-
+        
         double fitness = numeric_limits<double>::max();
 
         for (int iterCnt = 1; iterCnt <= maxIterations; iterCnt += iterationsPerUpdate)

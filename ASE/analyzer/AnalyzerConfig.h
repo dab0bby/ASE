@@ -39,6 +39,7 @@ namespace ASE
         struct
         {
             bool prealignToConvexHull = true;
+            bool prealignToBoundingBox = false;
             bool postalignByScale = false;
             int icpMaxIterations = 200;
             int icpStep = 1;

@@ -46,7 +46,11 @@ auto configuration = ASE::AnalyzerConfig();
  */
 void showHelp()
 {
-    std::cout << "\nUsage: ASE.exe <scene_cloud_filename.pcd> <object_cloud_filename.pcd> <reference_object_filename.stl> <output_filename.txt> [-c <configfile.txt> -v]" << std::endl;
+    std::cout << "\nUsage: ASE.exe <scene_cloud_filename.pcd> <object_cloud_filename.pcd> <reference_object_filename.stl> <output_filename.txt> [-c <configfile.txt> -h -v -vf]" << std::endl;
+    std::cout << "-c    Specifies a custom configuration file." << std::endl;
+    std::cout << "-h    Shows this help." << std::endl;
+    std::cout << "-v    Enables the viewer window. The whole process is visualized in this viewer." << std::endl;
+    std::cout << "-vf   Same as -v. Furthermore, the process interrupts at several stages of the analysis and waits for the user to press a key. " << std::endl;
 }
 
 
@@ -107,6 +111,8 @@ void loadConfiguration(const std::string& filename)
                 configuration.objectExtraction.clusterMaxSize = std::stoi(value);
             else if (key == "prealign_to_convex_hull")
                 configuration.objectAlignment.prealignToConvexHull = value == "true";
+            else if (key == "prealign_to_boundingbox")
+                configuration.objectAlignment.prealignToBoundingBox = value == "true";            
             else if (key == "postalign_by_scale")
                 configuration.objectAlignment.postalignByScale = value == "true";
             else if (key == "alignment_icp_max_iteration")
@@ -115,6 +121,8 @@ void loadConfiguration(const std::string& filename)
                 configuration.objectAlignment.icpStep = std::stoi(value);
             else if (key == "alignment_icp_epsilon")
                 configuration.objectAlignment.icpEpsilon = std::stod(value);
+            else if (key == "alignment_icpg_epsilon")
+                configuration.objectAlignment.icpgEpsilon = std::stod(value);
             else if (key == "object_normal_estimation_k")
                 configuration.analysis.objectNormalEstimationK = std::stoi(value);
             else if (key == "object_normal_estimation_radius")
@@ -168,6 +176,15 @@ void writeResult(const std::string& filename, const ASE::AnalysisResult& result,
     file.close();
 }
 
+int shutdown(int exitCode = EXIT_SUCCESS)
+{
+#if defined (_WIN32)
+    cout << endl;
+    system("Pause");
+#endif
+
+    return exitCode;
+}
 
 int main(int argc, char* argv[])
 {
@@ -177,13 +194,13 @@ int main(int argc, char* argv[])
     if (pcl::console::find_switch(argc, argv, "-h") || pcl::console::find_switch(argc, argv, "--help"))
     {
         showHelp();
-        return EXIT_SUCCESS;
+        return shutdown();
     }
 
     if (argc < 5)
     {
         showHelp();
-        return EXIT_FAILURE;
+        return shutdown(EXIT_FAILURE);
     }
 
     const std::string sceneFile = argv[1];
@@ -196,9 +213,32 @@ int main(int argc, char* argv[])
     std::cout << "Reference object: " << referenceFile << std::endl;
     std::cout << "Output data:      " << outputFile << std::endl;
 
+    if (!ASE::FileReader::fileExists(sceneFile))
+    {
+        std::cerr << "Scene file does not exist." << std::endl;
+        return shutdown(EXIT_FAILURE);
+    }
+    if (!ASE::FileReader::fileExists(objectFile))
+    {
+        std::cerr << "Object file does not exist." << std::endl;
+        return shutdown(EXIT_FAILURE);
+    }
+    if (!ASE::FileReader::fileExists(referenceFile))
+    {
+        std::cerr << "Reference file does not exist." << std::endl;
+        return shutdown(EXIT_FAILURE);
+    }
+
     // Check if user wants to see the visualizer
     if (pcl::console::find_switch(argc, argv, "-v"))
         configuration.enableViewer = true;
+
+    // Check if user wants to see the visualizer and a staged analysis with feedback
+    if (pcl::console::find_switch(argc, argv, "-vf"))
+    {
+        configuration.enableViewer = true;
+        configuration.forceUserFeedback = true;
+    }
 
     {
         std::string configFileName;
@@ -207,8 +247,8 @@ int main(int argc, char* argv[])
         {
             if (!ASE::FileReader::fileExists(configFileName))
             {
-                std::cerr << "\nConfigfile does not exist." << std::endl;
-                return EXIT_FAILURE;
+                std::cerr << "\nConfiguration file does not exist." << std::endl;
+                return shutdown(EXIT_FAILURE);
             }
 
             std::cout << "Configuration:    " << configFileName << std::endl;
@@ -225,15 +265,14 @@ int main(int argc, char* argv[])
     auto scene = fr.loadSceneCloud(sceneFile);    // Scene
     auto object = fr.loadSceneCloud(objectFile);   // Scene with object
     pcl::PolygonMesh reference;
-    if (ASE::FileReader::fileExists(referenceFile))
-        pcl::io::loadPolygonFileSTL(referenceFile, reference);
+    pcl::io::loadPolygonFileSTL(referenceFile, reference);
     std::cout << " Done" << std::endl;
 
     // Check if data is valid
     if (scene->empty() || object->empty())
     {
         std::cerr << "Cloud data not valid." << std::endl;
-        return EXIT_FAILURE;
+        return shutdown(EXIT_FAILURE);
     }
 
     // Scale the clouds
@@ -257,10 +296,6 @@ int main(int argc, char* argv[])
 
     // Cleanup
     delete analyzer;
-
-#if defined (_WIN32)
-    system("Pause");
-#endif
-
-    return EXIT_SUCCESS;
+    
+    return shutdown();
 }

@@ -5,7 +5,7 @@ using namespace chrono;
 
 namespace ASE
 {
-    StopWatch::StopWatch()
+    StopWatch::StopWatch() : _start(), _lap(0s)
     {
     }
 

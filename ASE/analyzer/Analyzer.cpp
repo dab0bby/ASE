@@ -210,6 +210,25 @@ namespace ASE
         };
         
         GeneralizedIterativeClosestPoint<PointXYZ, PointXYZ> icpg;
+        
+        if (_config.objectAlignment.prealignToBoundingBox)
+        {
+            vout << "performing ICP at bounding boxes of target object and reference model... ";
+            auto obbRef = computeOBB<PointXYZ>(reference).cloud;
+            auto obbObj = computeOBB<PointXYZ>(object).cloud;
+
+            auto cb = [this, &object, &iterCnt, &fitness](int n, double f, Matrix4f transform)
+            {
+                fitness = f;
+                iterCnt = n;
+                transformPointCloud(*object, *object, transform);
+                _viewer->updateCloud(object);
+                return true;
+            };
+
+            runIcp(obbObj, obbRef, _config.objectAlignment.icpgEpsilon, _config.objectAlignment.icpMaxIterations, _config.objectAlignment.icpStep, cb);
+            vout << "done (iterations=" << iterCnt << " fitness=" << fitness * 1000 << "mm)" << endl;
+        }
 
         if (_config.objectAlignment.prealignToConvexHull)
         {
@@ -308,7 +327,7 @@ namespace ASE
         }
         refArea /= 2;
 
-        vout << "done (area=" << refArea * 1e6 << "mm2)" << endl;
+        vout << "done (area=" << refArea * 1e6 << "sqmm)" << endl;
         vout << "triangulating object cloud...";
 
         PointCloud<PointNormal>::Ptr normalCloud(new PointCloud<PointNormal>);
@@ -358,7 +377,7 @@ namespace ASE
         }
         objArea /= 2;
 
-        vout << "done (area=" << objArea * 1e6 << "mm2)" << endl;
+        vout << "done (area=" << objArea * 1e6 << "sqmm)" << endl;
         _stopWatch->stop();
 
         double time = _stopWatch->getTime().count() * 1e-9;
