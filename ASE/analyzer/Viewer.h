@@ -1,15 +1,14 @@
 #pragma once
 
-#include <mutex>
-#include <future>
-#include <map>
+#include "CloudView.h"
+#include "AnalyzerConfig.h"
+
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
-
-#include "CloudView.h"
-#include "AnalyzerConfig.h"
-#include <unordered_set>
+#include <mutex>
+#include <future>
+#include <map>
 
 namespace ASE
 {
@@ -44,7 +43,7 @@ namespace ASE
         std::mutex _mutex, _viewerMutex;
         std::map<pcl::PointCloud<pcl::PointXYZ>::ConstPtr, std::string> _cloudMap;
         std::map<std::string, CloudView> _viewMap;
-        std::map<std::string, UpdateType> _pendingUpdates;        
+        std::map<std::string, UpdateType> _pendingUpdates;
         pcl::visualization::PCLVisualizer::Ptr _viewer;
         std::future<void> _spinThread;
         int _colorIndex = 0;
@@ -59,5 +58,4 @@ namespace ASE
         void _spin();
         void _voutUpdate(const std::string& text);
     };
-
 }

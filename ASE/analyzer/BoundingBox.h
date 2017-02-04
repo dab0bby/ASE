@@ -1,9 +1,8 @@
 #pragma once
 
 #include <pcl/point_types.h>
-#include <vector>
 
-namespace ASE 
+namespace ASE
 {
     struct BoundingBox
     {

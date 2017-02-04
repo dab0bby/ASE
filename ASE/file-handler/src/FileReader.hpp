@@ -18,13 +18,10 @@
 #define _SCL_SECURE_NO_WARNINGS 1
 #define _CRT_SECURE_NO_WARNINGS 1
 
-
-#include <string>
-
-#include "boost/make_shared.hpp"
-#include "pcl/point_cloud.h"
-#include "pcl/point_types.h"
-#include "pcl/io/pcd_io.h"
+#include <boost/make_shared.hpp>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
 
 
 namespace ASE

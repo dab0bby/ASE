@@ -4,12 +4,12 @@ using namespace std;
 
 namespace ASE
 {
-    AnalysisResult::AnalysisResult(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& object, const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& reference, const std::vector<float>& distances, 
-        double scale, double objectArea, double referenceArea, double computationTime) :
+    AnalysisResult::AnalysisResult(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& object, const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& reference, const std::vector<float>& distances,
+                                   double scale, double objectArea, double referenceArea, double computationTime) :
         _objectCloud(object), _referenceCloud(reference), _distances(distances), _sortedDistances(distances), _objectArea(objectArea), _referenceArea(referenceArea), _scale(scale), _computationTime(computationTime)
     {
         sort(_sortedDistances.begin(), _sortedDistances.end(), less<double>());
-        
+
         for (auto d : _distances)
             _avgDistance += d;
 

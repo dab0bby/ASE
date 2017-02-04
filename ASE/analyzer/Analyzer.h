@@ -9,12 +9,12 @@
 #include "AnalyzerConfig.h"
 #include "Viewer.h"
 #include "FeedbackController.h"
+#include "StopWatch.h"
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/PolygonMesh.h>
 #include <pcl/pcl_config.h>
-#include "StopWatch.h"
 
 #if PCL_VERSION_COMPARE(<, 1, 8, 0)
     #error Update your PCL

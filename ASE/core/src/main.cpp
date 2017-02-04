@@ -14,20 +14,19 @@
 
 #define _SCL_SECURE_NO_WARNINGS 1
 
-
-#include <iostream>
-#include <fstream>
-
 #include "../../file-handler/src/FileReader.hpp"
 #include "Analyzer.h"
 #include "AnalyzerConfig.h"
 
-#include "Eigen/Geometry"
-#include "pcl/console/parse.h"
-#include "pcl/point_cloud.h"
-#include "pcl/PolygonMesh.h"
-#include "pcl/io/vtk_lib_io.h"
-#include "pcl/common/transforms.h"
+#include <Eigen/Geometry>
+#include <pcl/console/parse.h>
+#include <pcl/point_cloud.h>
+#include <pcl/PolygonMesh.h>
+#include <pcl/io/vtk_lib_io.h>
+#include <pcl/common/transforms.h>
+
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 

@@ -4,28 +4,27 @@
 #include "Globals.h"
 #include "SmartStreamBuffer.h"
 
-#include <ostream>
-#include <functional>
 #include <pcl/filters/uniform_sampling.h>
 #include <pcl/registration/transformation_estimation_svd_scale.h>
 #include <pcl/registration/gicp.h>
 #include <pcl/surface/convex_hull.h>
 #include <pcl/filters/filter.h>
-#include <Eigen/Dense>
 #include <pcl/surface/gp3.h>
 #include <pcl/features/normal_3d.h>
+#include <Eigen/Dense>
 #include <chrono>
-#include <boost/chrono/round.hpp>
+#include <ostream>
+#include <functional>
 
 namespace ASE
 {
     shared_ptr<SmartStreamBuffer> voutBuffer = make_shared<SmartStreamBuffer>(6);
-    ostream vout(voutBuffer.get());    
-    
+    ostream vout(voutBuffer.get());
+
     typedef PointCloud<PointXYZ> Cloud;
 
     Analyzer::Analyzer(const AnalyzerConfig& config) : _config(config), _viewer(new Viewer(config)), _feedback(config.enableViewer && config.forceUserFeedback), _stopWatch(new StopWatch)
-    {        
+    {
     }
 
     Analyzer::~Analyzer()
@@ -33,8 +32,8 @@ namespace ASE
     }
 
     AnalysisResult Analyzer::run(pcl::PointCloud<pcl::PointXYZ>& backgroundScene, pcl::PointCloud<pcl::PointXYZ>& objectScene, pcl::PolygonMesh& referenceModel)
-    {             
-        _setupViewer();     
+    {
+        _setupViewer();
 
         vout << "preparing clouds..." << endl;
 
@@ -42,7 +41,7 @@ namespace ASE
         auto sceneCloud = backgroundScene.makeShared();
         auto objectCloud = objectScene.makeShared();
         auto referenceCloud = _setupModel(referenceModel);
-        vector<int> dummy; 
+        vector<int> dummy;
 
         vout << "resampling background scene from " << sceneCloud->size() << " to ";
         //resampleCloud<PointXYZ>(sceneCloud);
@@ -65,7 +64,7 @@ namespace ASE
         _viewer->addCloud(referenceCloud, "reference", _config.visualizer.pointSize, _config.visualizer.cloudOpacity);
 
         _wait();
-        
+
         _alignScenes(sceneCloud, objectCloud);
 
         _wait();
@@ -104,17 +103,17 @@ namespace ASE
 
         Affine3f m = Affine3f::Identity();
         auto bbScene = computeAABB<PointXYZ>(scene);
-        m.translation() << -bbScene.sizeX / 2 * 1.2, 0, -bbScene.cloud->at(0).z;
+        m.translation() << -bbScene.sizeX / 2 * 1.2 , 0 , -bbScene.cloud->at(0).z;
         transformPointCloud(*scene, *scene, m);
 
         m = Affine3f::Identity();
         auto bbObj = computeAABB<PointXYZ>(object);
-        m.translation() << bbObj.sizeX / 2 * 1.2, 0, -bbObj.cloud->at(0).z;
+        m.translation() << bbObj.sizeX / 2 * 1.2 , 0 , -bbObj.cloud->at(0).z;
         transformPointCloud(*object, *object, m);
     }
 
     void Analyzer::_alignScenes(pcl::PointCloud<pcl::PointXYZ>::Ptr& scene, pcl::PointCloud<pcl::PointXYZ>::Ptr& object)
-    {   
+    {
         Cloud::Ptr sceneKeys(new Cloud);
         Cloud::Ptr objKeys(new Cloud);
         double ls = _config.preprocess.keypointsLeafSize;
@@ -125,7 +124,7 @@ namespace ASE
         sampling.setInputCloud(scene);
         sampling.setRadiusSearch(ls);
         sampling.filter(*sceneKeys);
-        
+
         vout << "done (" << sceneKeys->size() << " points), foreground... ";
 
         sampling.setInputCloud(object);
@@ -135,30 +134,30 @@ namespace ASE
 
         _viewer->addCloud(sceneKeys, "scene_keys", _config.visualizer.keyPointSize, _config.visualizer.cloudOpacity);
         _viewer->addCloud(objKeys, "object_keys", _config.visualizer.keyPointSize, _config.visualizer.cloudOpacity);
-        
+
         _wait();
 
         vout << "aligning key points... ";
 
         auto keypointsIcpCallback = [this, &sceneKeys, &scene](int n, double fitness, Matrix4f transform)
-        {
-            transformPointCloud(*scene, *scene, transform);
-            _viewer->updateCloud(sceneKeys);
-            _viewer->updateCloud(scene);
-            return true;
-        };
+            {
+                transformPointCloud(*scene, *scene, transform);
+                _viewer->updateCloud(sceneKeys);
+                _viewer->updateCloud(scene);
+                return true;
+            };
 
         runIcp(sceneKeys, objKeys, _config.preprocess.icpEpsilon, _config.preprocess.icpMaxIterations, _config.preprocess.icpStep, keypointsIcpCallback);
-        
+
         vout << "done" << endl << "aligning scenes... ";
 
         auto fullCloudIcpCallback = [this, &sceneKeys, &scene](int n, double fitness, Matrix4f transform)
-        {
-            transformPointCloud(*sceneKeys, *sceneKeys, transform);
-            _viewer->updateCloud(sceneKeys);
-            _viewer->updateCloud(scene);
-            return true;
-        };
+            {
+                transformPointCloud(*sceneKeys, *sceneKeys, transform);
+                _viewer->updateCloud(sceneKeys);
+                _viewer->updateCloud(scene);
+                return true;
+            };
 
         runIcp(scene, object, _config.preprocess.icpEpsilon, _config.preprocess.icpMaxIterations, _config.preprocess.icpStep, fullCloudIcpCallback);
 
@@ -184,10 +183,10 @@ namespace ASE
         auto tmp = applyNoiseFilter(result, _config.objectExtraction.noiseFilterK, _config.objectExtraction.noiseStdDevMul);
         vout << "done" << endl;
         vout << "finding clusters: Tolerance=" << _config.objectExtraction.clusterTolerance << " MinSize=" << _config.objectExtraction.clusterMinSize
-            << " MaxSize=" << _config.objectExtraction.clusterMaxSize << "... ";            
+            << " MaxSize=" << _config.objectExtraction.clusterMaxSize << "... ";
         tmp = applyClusterFilter(tmp, _config.objectExtraction.clusterTolerance, _config.objectExtraction.clusterMinSize, _config.objectExtraction.clusterMaxSize);
         vout << "done" << endl;
-        
+
         object = tmp;
         _viewer->removeCloud(result);
         _viewer->addCloud(object, "object", _config.visualizer.pointSize, _config.visualizer.cloudOpacity);
@@ -197,20 +196,20 @@ namespace ASE
     {
         vout << "aligning object to reference..." << endl;
         int iterCnt = 0;
-        double fitness = 0; 
-        
+        double fitness = 0;
+
         centerClouds(*object, *reference);
 
         auto icpcb = [this, &object, &iterCnt, &fitness](int n, double f, Matrix4f transform)
-        {            
-            fitness = f;
-            iterCnt = n;
-            _viewer->updateCloud(object);
-            return true;
-        };
-        
+            {
+                fitness = f;
+                iterCnt = n;
+                _viewer->updateCloud(object);
+                return true;
+            };
+
         GeneralizedIterativeClosestPoint<PointXYZ, PointXYZ> icpg;
-        
+
         if (_config.objectAlignment.prealignToBoundingBox)
         {
             vout << "performing ICP at bounding boxes of target object and reference model... ";
@@ -218,13 +217,13 @@ namespace ASE
             auto obbObj = computeOBB<PointXYZ>(object).cloud;
 
             auto cb = [this, &object, &iterCnt, &fitness](int n, double f, Matrix4f transform)
-            {
-                fitness = f;
-                iterCnt = n;
-                transformPointCloud(*object, *object, transform);
-                _viewer->updateCloud(object);
-                return true;
-            };
+                {
+                    fitness = f;
+                    iterCnt = n;
+                    transformPointCloud(*object, *object, transform);
+                    _viewer->updateCloud(object);
+                    return true;
+                };
 
             runIcp(obbObj, obbRef, _config.objectAlignment.icpgEpsilon, _config.objectAlignment.icpMaxIterations, _config.objectAlignment.icpStep, cb);
             vout << "done (iterations=" << iterCnt << " fitness=" << fitness * 1000 << "mm)" << endl;
@@ -235,7 +234,7 @@ namespace ASE
             vout << "performing generalized ICP at target object and convex hull of reference model... ";
             auto convexHull = boost::make_shared<Cloud>();
             ConvexHull<PointXYZ> hull;
-            hull.setInputCloud(reference);            
+            hull.setInputCloud(reference);
             hull.reconstruct(*convexHull);
             runIcp(icpg, object, convexHull, _config.objectAlignment.icpgEpsilon, _config.objectAlignment.icpMaxIterations, _config.objectAlignment.icpStep, icpcb);
             vout << "done (iterations=" << iterCnt << " fitness=" << fitness * 1000 << "mm)" << endl;
@@ -257,7 +256,7 @@ namespace ASE
             runIcp(icp, object, reference, _config.objectAlignment.icpEpsilon, _config.objectAlignment.icpMaxIterations, _config.objectAlignment.icpStep, icpcb);
             auto bb = computeOBB<PointXYZ>(object);
             _finalScale = (bb.sizeX / initialBB.sizeX + bb.sizeY / initialBB.sizeY + bb.sizeZ / initialBB.sizeZ) / 3;
-            vout << "done (iterations=" << iterCnt << " fitness=" << fitness * 1000 << "mm, scale=" << _finalScale <<")" << endl;
+            vout << "done (iterations=" << iterCnt << " fitness=" << fitness * 1000 << "mm, scale=" << _finalScale << ")" << endl;
         }
     }
 
@@ -309,10 +308,10 @@ namespace ASE
         boost::shared_ptr<Cloud> meshCloud(new Cloud);
         fromPCLPointCloud2(referenceMesh.cloud, *meshCloud);
         double refArea = 0;
-        
+
         vout << "computing area of reference model...";
-        
-        for(auto triangle : referenceMesh.polygons)
+
+        for (auto triangle : referenceMesh.polygons)
         {
             auto a = meshCloud->at(triangle.vertices[0]),
                 b = meshCloud->at(triangle.vertices[1]),
@@ -323,7 +322,7 @@ namespace ASE
                 v3(c.x, c.y, c.z);
 
             // compute size of triangle http://mathworld.wolfram.com/TriangleArea.html (division by 2 follows at the end)
-            refArea += (v2 - v1).cross(v1 - v3).norm();			
+            refArea += (v2 - v1).cross(v1 - v3).norm();
         }
         refArea /= 2;
 
@@ -332,7 +331,7 @@ namespace ASE
 
         PointCloud<PointNormal>::Ptr normalCloud(new PointCloud<PointNormal>);
         NormalEstimation<PointXYZ, PointNormal> normals;
-        normals.setInputCloud(object);        
+        normals.setInputCloud(object);
         //normals.setKSearch(_config.analysis.objectNormalEstimationK);
         normals.setRadiusSearch(_config.analysis.objectNormalEstimationRadius);
         normals.compute(*normalCloud);

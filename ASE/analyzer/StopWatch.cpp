@@ -30,8 +30,8 @@ namespace ASE
     nanoseconds StopWatch::getTime() const
     {
         return _isRunning
-            ? _lap + (high_resolution_clock::now() - _start)
-            : _lap;
+                   ? _lap + (high_resolution_clock::now() - _start)
+                   : _lap;
     }
 
     void StopWatch::reset()

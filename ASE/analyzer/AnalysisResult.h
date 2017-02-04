@@ -1,9 +1,10 @@
 #pragma once
 
-#include "pcl/point_cloud.h"
-#include "pcl/point_types.h"
-#include "pcl/PolygonMesh.h"
 #include "Globals.h"
+
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/PolygonMesh.h>
 
 
 namespace ASE
@@ -12,8 +13,8 @@ namespace ASE
     {
     public:
         ASE_ANALYZER_API
-            AnalysisResult(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& object, const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& reference, const std::vector<float>& distances, 
-                double scale, double objectArea, double referenceArea, double computationTime);
+        AnalysisResult(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& object, const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& reference, const std::vector<float>& distances,
+                       double scale, double objectArea, double referenceArea, double computationTime);
 
         ASE_ANALYZER_API pcl::PointCloud<pcl::PointXYZ>::ConstPtr getObjectCloud() const;
         ASE_ANALYZER_API pcl::PointCloud<pcl::PointXYZ>::ConstPtr getReferenceCloud() const;

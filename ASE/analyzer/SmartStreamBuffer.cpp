@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-
 using namespace std;
 
 namespace ASE
@@ -22,7 +21,7 @@ namespace ASE
 
     std::basic_stringbuf<char>::int_type SmartStreamBuffer::overflow(int_type c)
     {
-        cout.put(c);    
+        cout.put(c);
         string s;
         s += static_cast<char>(c);
         _update(s);

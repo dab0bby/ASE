@@ -1,14 +1,14 @@
-
 #include "FeedbackController.h"
+
+#include "Globals.h"
 
 #include <pcl/visualization/keyboard_event.h>
 #include <thread>
 #include <chrono>
-#include "Globals.h"
 
 using namespace std;
 
-namespace ASE 
+namespace ASE
 {
     FeedbackController::FeedbackController(bool hasToWait) : _hasToWait(hasToWait)
     {
@@ -18,13 +18,13 @@ namespace ASE
     {
         if (!_hasToWait || !_viewer->isOpen())
             return;
-        
+
         vout << msg << endl;
         _waiting = true;
-        
-        while (_waiting && _viewer->isOpen())        
-            this_thread::sleep_for(20ms);       
-        
+
+        while (_waiting && _viewer->isOpen())
+            this_thread::sleep_for(20ms);
+
         _hasToWait &= _viewer->isOpen();
     }
 
@@ -49,5 +49,4 @@ namespace ASE
 
         _waiting = false;
     }
-    
 }

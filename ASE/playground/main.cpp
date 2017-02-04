@@ -1,12 +1,14 @@
 ﻿#define _SCL_SECURE_NO_WARNINGS 1
 
-//#include "opencv2/opencv.hpp"
-#include "pcl/range_image/range_image_planar.h"
-#include "pcl/visualization/pcl_visualizer.h"
-#include "pcl/point_cloud.h"
-#include "pcl/point_types.h"
+#include "MeshSampling.h"
+#include "ICPThreadData.h"
+#include "out.h"
+
+#include <pcl/range_image/range_image_planar.h>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <pcl/common/transforms.h>
-#include <vector>
 #include <pcl/io/vtk_lib_io.h>
 #include <pcl/io/ply_io.h>
 #include <pcl/octree/octree.h>
@@ -18,8 +20,6 @@
 #include <pcl/features/narf.h>
 #include <pcl/keypoints/iss_3d.h>
 #include <pcl/keypoints/uniform_sampling.h>
-#include <math.h>
-#include <iostream>
 #include <pcl/registration/correspondence_estimation_normal_shooting.h>
 #include <pcl/registration/transformation_estimation_point_to_plane.h>
 #include <pcl/registration/correspondence_rejection_surface_normal.h>
@@ -32,20 +32,19 @@
 #include <pcl/registration/transformation_estimation_svd_scale.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/surface/concave_hull.h>
-
-#include <chrono>
 #include <pcl/visualization/point_cloud_color_handlers.h>
-#include <thread>
-
-#include "MeshSampling.h"
-#include "ICPThreadData.h"
-#include <mutex>
-#include "out.h"
-#include <future>
 #include <pcl/filters/voxel_grid.h>
 
+#include <math.h>
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <future>
+
 #if PCL_VERSION_COMPARE(<, 1, 8, 0)
-#error Update your PCL
+    #error Update your PCL
 #endif
 
 using namespace std;

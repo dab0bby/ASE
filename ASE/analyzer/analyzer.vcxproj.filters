@@ -68,9 +68,6 @@
     <ClCompile Include="FeedbackController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Computation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SmartStreamBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

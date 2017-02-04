@@ -1,14 +1,14 @@
-﻿#include <pcl/visualization/pcl_visualizer.h>
+﻿#include "MeshSampling.h"
+
+#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/vtk_lib_io.h>
-#include <vtkTriangle.h>
-#include <vtkTriangleFilter.h>
-#include <vtkPolyDataMapper.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
-
-#include "MeshSampling.h"
+#include <vtkTriangle.h>
+#include <vtkTriangleFilter.h>
+#include <vtkPolyDataMapper.h>
 
 
 MeshSampling::MeshSampling() : _rd(), _mt(_rd()), _dist(0, 1)

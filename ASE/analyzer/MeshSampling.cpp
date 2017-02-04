@@ -1,13 +1,12 @@
-﻿#include <pcl/visualization/pcl_visualizer.h>
+﻿#include "MeshSampling.h"
+
+#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/vtk_lib_io.h>
 #include <vtkTriangle.h>
 #include <vtkTriangleFilter.h>
 #include <vtkPolyDataMapper.h>
 #include <pcl/filters/voxel_grid.h>
-
-#include "MeshSampling.h"
-
 
 ASE::MeshSampling::MeshSampling() : _rd(), _mt(_rd()), _dist(0, 1)
 {
@@ -84,8 +83,8 @@ void ASE::MeshSampling::_randPSurface(vtkPolyData* polydata, std::vector<double>
     polydata->GetPoint(ptIds[1], B);
     polydata->GetPoint(ptIds[2], C);
     _randomPointTriangle(float(A[0]), float(A[1]), float(A[2]),
-                        float(B[0]), float(B[1]), float(B[2]),
-                        float(C[0]), float(C[1]), float(C[2]), p);
+                         float(B[0]), float(B[1]), float(B[2]),
+                         float(C[0]), float(C[1]), float(C[2]), p);
 }
 
 void ASE::MeshSampling::_uniformSampling(vtkSmartPointer<vtkPolyData> polydata, size_t n_samples, pcl::PointCloud<pcl::PointXYZ>& cloud_out)

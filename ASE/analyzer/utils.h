@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Globals.h"
+
 #include <string>
 #include <sstream>
 #include <vector>
-#include "Globals.h"
 
 namespace ASE
 {
@@ -16,7 +17,7 @@ namespace ASE
         while (std::getline(ss, item, delim))
             elems.push_back(item);
     }
-     
+
     ASE_ANALYZER_API
     inline std::vector<std::string> split(const std::string& s, char delim)
     {
@@ -87,5 +88,4 @@ namespace ASE
     {
         std::initializer_list<int>{ (f(std::forward<Ts>(xs)) , 0)... };
     }
-
 }

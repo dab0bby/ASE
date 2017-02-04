@@ -6,12 +6,11 @@
 #define _SCL_SECURE_NO_WARNINGS 1
 
 
-#include <iostream>
-
 #include "FileFactory.hpp"
-
 #include "FileReader.hpp"
+
 #include <boost/smart_ptr/make_shared.hpp>
+#include <iostream>
 
 
 int main(int argc, char* argv[])

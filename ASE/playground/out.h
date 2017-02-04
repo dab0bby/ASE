@@ -1,9 +1,10 @@
 #pragma once
 
+#include "utils.h"
+
 #include <sstream>
 #include <ostream>
 #include <pcl/visualization/pcl_visualizer.h>
-#include "utils.h"
 
 
 class out

@@ -1,7 +1,8 @@
 #pragma once
+
 #include <vector>
 
-namespace ASE 
+namespace ASE
 {
     class AnalyzerConfig
     {
@@ -33,7 +34,6 @@ namespace ASE
             double clusterTolerance = 0.02;
             int clusterMinSize = 1;
             int clusterMaxSize = 100000;
-
         } objectExtraction;
 
         struct
@@ -53,7 +53,6 @@ namespace ASE
             double objectNormalEstimationRadius = 0.08;
             double objectTriangulationKMultiplier = 3.5;
             double objectTriangulationSearchRadius = 0.05;
-
         } analysis;
 
         struct
@@ -70,7 +69,6 @@ namespace ASE
                 { 197,0,0 },{ 57,187,0 },{ 186,187,0 },{ 135,134,255 },{ 255,0,0 },{ 208,0,192 },{ 65,197,198 },
                 { 94,0,0 },{ 22,87,0 },{ 83,83,0 },{ 29,15,255 },{ 124,0,114 },{ 34,114,114 }
             };
-
         } visualizer;
     };
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <sstream>
 #include <functional>
 #include <vector>
@@ -8,10 +9,12 @@ namespace ASE
     class SmartStreamBuffer : public std::stringbuf
     {
     public:
-        typedef void(SubscriberPtr)(const std::string&);
+        typedef void (SubscriberPtr)(const std::string&);
         typedef std::function<void(const std::string&)> Subscriber;
 
-        explicit SmartStreamBuffer(int lineCount = 1) : _lineCount(lineCount) {};
+        explicit SmartStreamBuffer(int lineCount = 1) : _lineCount(lineCount)
+        {
+        };
 
         void subscribe(Subscriber sub);
         //void unsubscribe(SubscriberPtr sub);
@@ -27,5 +30,5 @@ namespace ASE
 
         void _update(const std::string& s);
         void _notify();
-    };    
+    };
 }

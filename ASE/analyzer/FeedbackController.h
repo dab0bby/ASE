@@ -1,7 +1,8 @@
 #pragma once
-#include "AnalyzerConfig.h"
-#include <pcl/visualization/pcl_visualizer.h>
+
 #include "Viewer.h"
+
+#include <pcl/visualization/pcl_visualizer.h>
 
 namespace ASE
 {
@@ -20,5 +21,4 @@ namespace ASE
         bool _waiting = false;
         std::shared_ptr<Viewer> _viewer;
     };
-
 }

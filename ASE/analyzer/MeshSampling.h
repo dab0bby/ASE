@@ -7,7 +7,7 @@
 #include <vtkSmartPointer.h>
 #include <random>
 
-namespace ASE 
+namespace ASE
 {
     class MeshSampling
     {

@@ -28,7 +28,6 @@
   <ItemGroup>
     <ClCompile Include="AnalysisResult.cpp" />
     <ClCompile Include="Analyzer.cpp" />
-    <ClCompile Include="Computation.cpp" />
     <ClCompile Include="FeedbackController.cpp" />
     <ClCompile Include="MeshSampling.cpp" />
     <ClCompile Include="SmartStreamBuffer.cpp" />
