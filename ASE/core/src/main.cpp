@@ -177,10 +177,10 @@ void writeResult(const std::string& filename, const ASE::AnalysisResult& result,
 
 int shutdown(int exitCode = EXIT_SUCCESS)
 {
-#if defined (_WIN32)
-    cout << endl;
-    system("Pause");
-#endif
+//#if defined (_WIN32)
+//    cout << endl;
+//    system("Pause");
+//#endif
 
     return exitCode;
 }
